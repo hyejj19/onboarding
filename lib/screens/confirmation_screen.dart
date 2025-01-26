@@ -13,13 +13,45 @@ class ConfirmationScreen extends StatefulWidget {
   State<ConfirmationScreen> createState() => _ConfirmationScreenState();
 }
 
-void _onTapNext(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (context) => PasswordScreen(),
-  ));
-}
-
 class _ConfirmationScreenState extends State<ConfirmationScreen> {
+  final List<TextEditingController> _controllers =
+      List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+
+  String _otpValue = '';
+  bool _isDisabled = true;
+
+  void _onFieldChanged(String value, int index) {
+    if (value.length == 1 && index < 3) {
+      FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+    }
+
+    setState(() {
+      _otpValue = _controllers.map((controller) => controller.text).join('');
+      _isDisabled = _otpValue.length < 4;
+    });
+  }
+
+  void _onTapNext(BuildContext context) {
+    if (_otpValue.length < 3) return;
+
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => PasswordScreen(),
+    ));
+  }
+
+  @override
+  void dispose() {
+    for (var focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +78,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                   return SizedBox(
                     width: 70,
                     child: TextField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
                       maxLength: 1,
@@ -58,12 +92,30 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                           borderSide: BorderSide(color: Colors.blue),
                         ),
                       ),
+                      onChanged: (value) {
+                        _onFieldChanged(value, index);
+                      },
                     ),
                   );
                 }),
               ),
+              Gaps.v14,
+              _isDisabled
+                  ? Container() // _isDisabled가 true일 때 아무것도 렌더링하지 않음
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.solidCircleCheck,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
               Expanded(child: Container()),
-              Button(text: 'Next', onTapFunction: _onTapNext),
+              Button(
+                  text: 'Next',
+                  isDisabled: _isDisabled,
+                  onTapFunction: _onTapNext),
               Gaps.v20,
             ],
           ),

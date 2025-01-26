@@ -83,7 +83,10 @@ class _InterestScreenSecondState extends State<InterestScreenSecond> {
                     "Interests are used to personalize your experience and will be visible on your profile.",
               ),
               Expanded(child: Container()),
-              Button(text: 'Next', onTapFunction: (context) => {}),
+              Button(
+                  text: 'Next',
+                  onTapFunction: (context) => {},
+                  isDisabled: true),
               Gaps.v20,
             ],
           ),

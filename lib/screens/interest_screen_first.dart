@@ -90,7 +90,11 @@ class _InterestScreenFirstState extends State<InterestScreenFirst> {
                     "Select at least 3 interests to personalize your Twitter experience. They will be visible on your profile.",
               ),
               Expanded(child: Container()),
-              Button(text: 'Next', onTapFunction: _onTapNext),
+              Button(
+                text: 'Next',
+                onTapFunction: _onTapNext,
+                isDisabled: true,
+              ),
               Gaps.v20,
             ],
           ),

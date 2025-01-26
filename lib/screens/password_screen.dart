@@ -129,7 +129,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                 cursorColor: Theme.of(context).primaryColor,
               ),
               Expanded(child: Container()),
-              Button(text: 'Next', onTapFunction: _onTapNext),
+              Button(text: 'Next', onTapFunction: _onTapNext, isDisabled: true),
               Gaps.v20,
             ],
           ),
