@@ -33,7 +33,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   }
 
   void _onTapNext(BuildContext context) {
-    if (_otpValue.length < 3) return;
+    if (_isDisabled) return;
 
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => PasswordScreen(),

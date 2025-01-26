@@ -5,6 +5,7 @@ import 'package:onboarding/constants/sizes.dart';
 import 'package:onboarding/screens/interest_screen_second.dart';
 import 'package:onboarding/widgets/button.dart';
 import 'package:onboarding/widgets/display_message.dart';
+import 'package:onboarding/widgets/interest_card.dart';
 
 class InterestScreenFirst extends StatefulWidget {
   const InterestScreenFirst({super.key});
@@ -14,55 +15,34 @@ class InterestScreenFirst extends StatefulWidget {
 }
 
 class _InterestScreenFirstState extends State<InterestScreenFirst> {
-  final TextEditingController _passwordController = TextEditingController();
+  final List<String> _interests = [
+    'Fashion & beauty',
+    'Arts & culture',
+    'Business & finance',
+    'Travle',
+    'Music',
+    'Outdoors',
+    'Animation & comics',
+    'Food',
+    'Entertainment',
+    'Gaming',
+  ];
 
-  String _password = '';
-  bool _isObsecureText = true;
+  List<String> _selected = [];
 
-  @override
-  void initState() {
-    super.initState();
-
-    _passwordController.addListener(
-      () {
-        setState(() {
-          _password = _passwordController.text;
-        });
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  bool _isPasswordValid() {
-    return _password.isNotEmpty && _password.length >= 8;
-  }
-
-  void _onScaffoldTap() {
-    FocusScope.of(context).unfocus();
-  }
-
-  void _onSubmit() {
-    if (_password.isEmpty || !_isPasswordValid()) return;
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => InterestScreenFirst(),
-      ),
-    );
-  }
-
-  void _onObsecureTap() {
+  void _onTapCard(String interest) {
     setState(() {
-      _isObsecureText = !_isObsecureText;
+      if (_selected.contains(interest)) {
+        _selected.remove(interest);
+      } else {
+        _selected.add(interest);
+      }
     });
   }
 
   void _onTapNext(BuildContext context) {
+    if (_selected.length < 3) return;
+
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => InterestScreenSecond(),
     ));
@@ -89,11 +69,57 @@ class _InterestScreenFirstState extends State<InterestScreenFirst> {
                 description:
                     "Select at least 3 interests to personalize your Twitter experience. They will be visible on your profile.",
               ),
+              SizedBox(
+                height: 450,
+                child: SingleChildScrollView(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _interests
+                              .sublist(0, _interests.length ~/ 2)
+                              .map((interest) {
+                            return InterestCard(
+                              text: interest,
+                              isSelected: _selected.contains(interest),
+                              onTap: () => _onTapCard(interest),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _interests
+                              .sublist(_interests.length ~/ 2)
+                              .map((interest) {
+                            return InterestCard(
+                              text: interest,
+                              isSelected: _selected.contains(interest),
+                              onTap: () => _onTapCard(interest),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Expanded(child: Container()),
-              Button(
-                text: 'Next',
-                onTapFunction: _onTapNext,
-                isDisabled: true,
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('${_selected.length} of 3 selected'),
+                  ),
+                  Expanded(
+                    child: Button(
+                      text: 'Next',
+                      onTapFunction: _onTapNext,
+                      isDisabled: _selected.length < 3,
+                    ),
+                  ),
+                ],
               ),
               Gaps.v20,
             ],

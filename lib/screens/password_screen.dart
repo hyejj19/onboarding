@@ -65,6 +65,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
   }
 
   void _onTapNext(BuildContext context) {
+    if (_isDisabled) return;
+
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => InterestScreenFirst(),
     ));
