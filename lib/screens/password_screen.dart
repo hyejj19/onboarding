@@ -18,6 +18,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   String _password = '';
   bool _isObsecureText = true;
+  bool _isDisabled = true;
 
   @override
   void initState() {
@@ -27,6 +28,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
       () {
         setState(() {
           _password = _passwordController.text;
+          _isDisabled = _password.length < 8;
         });
       },
     );
@@ -122,14 +124,29 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                 color: Colors.grey.shade400,
                                 size: Sizes.size20,
                               ),
-                      )
+                      ),
+                      Gaps.h10,
+                      _isDisabled
+                          ? Container()
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.solidCircleCheck,
+                                  color: Colors.green,
+                                ),
+                              ],
+                            ),
                     ],
                   ),
                 ),
                 cursorColor: Theme.of(context).primaryColor,
               ),
               Expanded(child: Container()),
-              Button(text: 'Next', onTapFunction: _onTapNext, isDisabled: true),
+              Button(
+                  text: 'Next',
+                  onTapFunction: _onTapNext,
+                  isDisabled: _isDisabled),
               Gaps.v20,
             ],
           ),

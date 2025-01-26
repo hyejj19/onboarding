@@ -101,7 +101,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               ),
               Gaps.v14,
               _isDisabled
-                  ? Container() // _isDisabled가 true일 때 아무것도 렌더링하지 않음
+                  ? Container()
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
